@@ -1,0 +1,19 @@
+{
+  "name": "fcc-booktrading",
+  "version": "1.0.0",
+  "description": "This is part of fcc backend certification program",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nishant-tomer/fcc-booktrading.git"
+  },
+  "author": "Nishant Tomer <nishantfun4@gmail.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/nishant-tomer/fcc-booktrading/issues"
+  },
+  "homepage": "https://github.com/nishant-tomer/fcc-booktrading#readme"
+}
