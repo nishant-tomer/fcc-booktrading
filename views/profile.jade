@@ -1,0 +1,205 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title BookTrading | Profile
+    link(href='css/bootstrap.min.css', rel='stylesheet')
+    link(href='font-awesome/css/font-awesome.css', rel='stylesheet')
+    link(href='css/animate.css', rel='stylesheet')
+    link(href='css/style.css', rel='stylesheet')
+  body.fixed-navigation
+    #wrapper
+      nav.navbar-default.navbar-static-side(role='navigation')
+        .sidebar-collapse
+          ul#side-menu.nav.metismenu
+            li.nav-header
+              .dropdown.profile-element
+                a.dropdown-toggle(data-toggle='dropdown', href='#')
+                  span.clear
+                    span.block.m-t-xs
+                      strong.font-bold David Williams
+                    span.text-muted.text-xs.block
+                      | Art Director
+                      
+            li.active
+              a(href='#')
+                i.fa.fa-files-o
+                span.nav-label All Books               
+            li
+              a(href='#')
+                i.fa.fa-th-large
+                span.nav-label Profile
+                span.fa.arrow
+              ul.nav.nav-second-level
+                li
+                  a(href='#') Edit Profile
+                li
+                  a(href='/logout') Log Out
+            li
+              a(href='#')
+                i.fa.fa-book
+                span.nav-label My Books
+                span.fa.arrow
+              ul.nav.nav-second-level
+                li
+                  a(href='#') All my Books
+                li
+                  a(href='#') Borrowed Books
+                li
+                  a(href='#') Lent Books
+            li
+              a(href='#')
+                i.fa.fa-envelope
+                span.nav-label Pending Requests
+                span.fa.arrow
+              ul.nav.nav-second-level
+                li
+                  a(href='#') Borrowal 
+                li
+                  a(href='#') Lending
+          
+      #page-wrapper.gray-bg.sidebar-content
+        .row.border-bottom
+          nav.navbar.navbar-static-top.white-bg(role='navigation', style='margin-bottom: 0')
+            .navbar-header
+              a.navbar-minimalize.minimalize-styl-2.btn.btn-primary(href='#')
+                i.fa.fa-bars
+            ul.nav.navbar-top-links.navbar-right
+              li
+                span.m-r-sm.text-muted.welcome-message Welcome to Your online Book Catalogue.
+              li
+                a(href='/logout')
+                  i.fa.fa-sign-out
+                  |  Log out
+        .wrapper-content
+          .row
+            .col-lg-4
+              .ibox.float-e-margins
+                .ibox-title
+                  span.label.label-primary.pull-right Today
+                  h5 Vistits
+                .ibox-content
+                  h1.no-margins 22 285,400
+                  .stat-percent.font-bold.text-navy
+                    | 20% 
+                    i.fa.fa-level-up
+                  small New orders
+            .col-lg-4
+              .ibox.float-e-margins
+                .ibox-title
+                  span.label.label-info.pull-right Monthly
+                  h5 Orders
+                .ibox-content
+                  h1.no-margins 60 420,600
+                  .stat-percent.font-bold.text-info
+                    | 40% 
+                    i.fa.fa-level-up
+                  small New orders
+            .col-lg-4
+              .ibox.float-e-margins
+                .ibox-title
+                  span.label.label-warning.pull-right Annual
+                  h5 Income
+                .ibox-content
+                  h1.no-margins $ 120 430,800
+                  .stat-percent.font-bold.text-warning
+                    | 16% 
+                    i.fa.fa-level-up
+                  small New orders
+            .col-lg-4
+              .ibox.float-e-margins
+                .ibox-title
+                  span.label.label-primary.pull-right Today
+                  h5 Vistits
+                .ibox-content
+                  h1.no-margins 22 285,400
+                  .stat-percent.font-bold.text-navy
+                    | 20% 
+                    i.fa.fa-level-up
+                  small New orders
+            .col-lg-4
+              .ibox.float-e-margins
+                .ibox-title
+                  span.label.label-info.pull-right Monthly
+                  h5 Orders
+                .ibox-content
+                  h1.no-margins 60 420,600
+                  .stat-percent.font-bold.text-info
+                    | 40% 
+                    i.fa.fa-level-up
+                  small New orders
+            .col-lg-4
+              .ibox.float-e-margins
+                .ibox-title
+                  span.label.label-warning.pull-right Annual
+                  h5 Income
+                .ibox-content
+                  h1.no-margins $ 120 430,800
+                  .stat-percent.font-bold.text-warning
+                    | 16% 
+                    i.fa.fa-level-up
+                  small New orders
+          .row
+            .col-lg-12
+              .ibox.float-e-margins
+                .ibox-title
+                  h5
+                    | Leave Blank the Values You dont want to Change
+                .ibox-content
+                  form.form-horizontal.text-left(method='get')
+                    .form-group
+                      label.col-lg-2.control-label New username
+                      span.col-lg-2.text-right.form-control-static David Williams
+                      .col-sm-7
+                        input.form-control(type='text')
+                        span.help-block.m-b-none Alpha Numeric Values. Less than 40 characters. 
+                    .form-group
+                      label.col-lg-2.control-label New city
+                      span.col-lg-2.text-right.form-control-static Hyderabad
+                      .col-sm-7
+                        input.form-control(type='text')
+                        span.help-block.m-b-none Alphabets. Less than 40 characters. 
+                    .form-group
+                      label.col-lg-2.control-label New state
+                      span.col-lg-2.text-right.form-control-static Telangana
+                      .col-sm-7
+                        input.form-control(type='text')
+                        span.help-block.m-b-none Alphabets. Less than 40 characters. 
+                    .form-group
+                      label.col-sm-2.control-label New password
+                      .col-sm-2
+                      .col-sm-7
+                        input.form-control(type='password', name='password')
+                        span.help-block.m-b-none Alphanumeric. Min 6, Max 15 characters.
+                    .form-group
+                      label.col-sm-2.control-label Confirm new password
+                      .col-sm-2
+                      .col-sm-7
+                        input.form-control(type='password', name='password')
+                    .hr-line-dashed
+                    .form-group
+                      .col-sm-4.col-sm-offset-2
+                        button.btn.btn-white(type='submit') Cancel
+                        button.btn.btn-primary(type='submit' style= "margin-left:5px;") Save changes
+
+          
+        .footer
+          .pull-right
+            | Nishant Tomer for 
+            strong FreeCodeCamp.
+          div
+            strong Credits :
+            |  jQuery, Bootstrap, INSIPINIA Admin Theme, Express, Node, Mongo, Heroku, Google Books   
+      
+    // Mainly scripts
+    script(src='js/jquery-2.1.1.js')
+    script(src='js/bootstrap.min.js')
+    script(src='js/plugins/metisMenu/jquery.metisMenu.js')
+    script(src='js/plugins/slimscroll/jquery.slimscroll.min.js')
+    // Custom and plugin javascript
+    script(src='js/inspinia.js')
+    script(src='js/plugins/pace/pace.min.js')
+    // jQuery UI
+    script(src='js/plugins/jquery-ui/jquery-ui.min.js')
+  

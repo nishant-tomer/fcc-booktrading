@@ -1,0 +1,66 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title FCC-Nishant | Bookfare 
+    link(href='css/bootstrap.min.css', rel='stylesheet')
+    link(href='font-awesome/css/font-awesome.min.css', rel='stylesheet')
+    link(href='css/style.css', rel='stylesheet')
+  body#page-top.landing-page
+    .navbar-wrapper
+      nav.navbar.navbar-default.navbar-fixed-top(role='navigation')
+        .container
+          .navbar-header
+            a.navbar-brand.fa.fa-book(href='#')  BOOKFARE
+          
+    .container.header-back.one
+      .carousel-caption(style = "margin-left:10%;")
+        h1 A Book Club
+        h2  Borrow
+          br 
+          | Lend
+          br
+          | Keep Tidy
+          br 
+
+        p
+          a.btn.btn-lg.btn-primary(href='/signup', role='button' style = "margin-right:5px;") Register
+          a.btn.btn-lg.btn-primary(href='/login', role='button') Sign In
+
+      
+    section#features.container.services
+      .row(style="margin: -40px auto auto ;")
+        .col-sm-3
+          h2 Browse Private Libraries
+          p
+            | You can browse through all the books Listed on this Platform. See What other are Reading
+        .col-sm-3
+          h2 Borrow Books to Read
+          p
+            | You can Borrow the books you just cant seem to move over. Given that book owner agrees.
+        .col-sm-3
+          h2 Lend your books
+          p
+            | Spread the love. Lend your book titles to other fellow readers. Biggest joy is spreading knowledge.
+        .col-sm-3
+          h2 Keep Track of Everything
+          p
+            | You can Keep track of every book you ever owned, Lent, Borrowed. Your personal online Catalog.
+        
+      .row
+        .hr-line-dashed
+        .col-sm-2
+          strong @Nishant Tomer 
+        .col-sm-3
+          a.btn.btn-default(href="https://github.com/nishant-tomer/fcc-booktrading",target="_blank")
+            strong GitHub Repo
+          a.btn.btn-default(href="https://www.freecodecamp.com/challenges/manage-a-book-trading-club",target="_blank")
+            strong FreeCodeCamp
+        .col-sm-7 
+          strong Credits :
+          |  jQuery, Bootstrap, INSIPINIA Admin Theme, Express, Node, Mongo, Heroku, Google Books 
+
+    script(src='js/jquery-2.1.1.js')
+    script(src='js/bootstrap.min.js')
