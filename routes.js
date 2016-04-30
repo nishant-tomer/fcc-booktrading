@@ -4,10 +4,6 @@ var userController = require("./controllers/userController"),
 
 module.exports = function(app,passport){
 
-    app.get("/profile",function(req, res) {
-        res.render("profile.jade")
-    });
-
     app.get("/",function(req,res){
       res.render("home.jade")
     })
@@ -25,9 +21,11 @@ module.exports = function(app,passport){
       res.redirect("/")
     })
 
-    // app.get("/profile",helpers.isLoggedIn,userController.getProfile)
+    app.get("/profile", helpers.isLoggedIn, userController.getProfile)
     app.post("/editprofile",helpers.isLoggedIn,helpers.validate,userController.editProfile)
-    app.post("/signup",helpers.validate,userController.register)
+    app.post("/signup",function(req,res,next){
+      return next()
+    },helpers.validate,userController.register)
 
     app.post("/login",helpers.validate,passport
                         .authenticate('local',{

@@ -13,9 +13,9 @@ html
       .row
         .col-md-6
           .ibox-content
-            form.m-t(role='form', action='/login')
+            form.m-t#form(role='form', action='/login' ,method="post")
               .form-group
-                input.form-control(type='email', name="username" placeholder='Username', required='true')
+                input.form-control(type='text', name="username" placeholder='Username', required='true')
               .form-group
                 input.form-control(type='password', name="password" placeholder='Password', required='true')
               button.btn.btn-primary.block.full-width.m-b(type='submit') Login
@@ -31,10 +31,13 @@ html
             | You can Login With your own credentials OR you can use given credentials if you just want to explore the app.
           p 
             strong 1.
-          p   &nbsp; username: explorer
+          p   &nbsp; username: Explorer
           p   &nbsp; password: whatpassword
           p
             strong 2. 
-          p   &nbsp; username: anotherexplorer
+          p   &nbsp; username: Another Explorer
           p   &nbsp; password: leaveit
-    
+      
+      script(src='js/jquery-2.1.1.js')
+      script(src="js/plugins/validate/jquery.validate.min.js")
+      script(src='js/rules.js')

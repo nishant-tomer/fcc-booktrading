@@ -6,7 +6,6 @@ html
     title BOOKFARE| Register
     link(href='css/bootstrap.min.css', rel='stylesheet')
     link(href='font-awesome/css/font-awesome.css', rel='stylesheet')
-    link(href='css/plugins/iCheck/custom.css', rel='stylesheet')
     link(href='css/animate.css', rel='stylesheet')
     link(href='css/style.css', rel='stylesheet')
   body.gray-bg
@@ -17,19 +16,15 @@ html
         h3 Register to 
           a.btn.btn-default(href="/") BOOKFARE
         p Create account to see it in action.
-        form.m-t(role='form', action='login.html')
+        form.m-t#form(role='form', action='/signup', method="post")
           .form-group
             input.form-control(type='text',name='username', placeholder='username', required='true')
-            small Only Alphanumeric, max 40 characters
           .form-group
             input.form-control(type='text',name='city', placeholder='city', required='true')
-            small Only Alphabetes, max 40 characters
           .form-group
             input.form-control(type='text',name='state', placeholder='State', required='true')
-            small Only Alphabetes, max 40 characters
           .form-group
             input.form-control(type='password', name='password', placeholder='Password', required='true')
-            small Only Alphanumeric, min 6 and max 15 characters
           .form-group
             input.form-control(type='password', name='confirmpassword', placeholder='Confirm Password', required='true')
           button.btn.btn-primary.block.full-width.m-b(type='submit') Register
@@ -40,4 +35,5 @@ html
           small Nishant Tomer @  FreeCodeCamp
     // Mainly scripts
     script(src='js/jquery-2.1.1.js')
-    script(src='js/bootstrap.min.js')
+    script(src="js/plugins/validate/jquery.validate.min.js")
+    script(src='js/rules.js')

@@ -12,24 +12,32 @@ helpers.validate = function(req,res,next){
 
     var patternNameAndAddress = /[a-z A-Z]+/
     var patternPassword = /[a-z A-Z0-9]{6,}/
-
     if (req.url == "/signup"){
       var name = matches(req.body.username,patternNameAndAddress)
       var city = matches(req.body.city,patternNameAndAddress)
       var state = matches(req.body.state,patternNameAndAddress)
       var password = matches(req.body.password,patternPassword)
-      if( name && city && state && password){ return next() }
-      req.flash("message","One out of submitted values is invalid")
+      var confirmpassword = matches(req.body.confirmpassword,patternPassword)
+      if( password != confirmpassword ){
+        req.flash("message","passwords don't match")
+        res.redirect("/signup")
+       }
+      if( name && city && state && password && confirmpassword ){  return next() }
+      req.flash("message","One out of all of submitted values is invalid")
       res.redirect("/signup")
     }
 
     if (req.url == "/editprofile"){
+      if( req.body.newpassword != req.body.confirmnewpassword ){
+        req.flash("message","passwords don't match")
+        res.redirect("/profile")
+       }
       var body = []
       var tracker = []
       var checker = editProfileBodyChecker(req,body,tracker)
       if( checker ){ return next() }
-      req.flash("message","One out of submitted values is invalid")
-      res.redirect("/signup")
+      req.flash("message","One out of all of submitted values is invalid")
+      res.redirect("/profile")
     }
 
     if (req.url == "/login"){
@@ -50,29 +58,44 @@ function matches(string,pattern){
 
 function editProfileBodyChecker(req,body,tracker){
 
-  if(!!req.body.username){
-    var name = matches(req.body.username,patternNameAndAddress)
-    body.push["param"]
-    if(name){ tracker.push("done")}
+  var patternNameAndAddress = /[a-z A-Z]+/
+  var patternPassword = /[a-z A-Z0-9]{6,}/
+
+  if(req.body.newusername.length != 0){
+    var newname = matches(req.body.newusername,patternNameAndAddress)
+    body.push("param")
+    if(newname){ tracker.push("done")}
   }
 
-  if(!!req.body.city){
-    var city = matches(req.body.city,patternNameAndAddress)
-    body.push["param"]
-    if(city){ tracker.push("done")}
+  if(req.body.newcity.length != 0){
+    var newcity = matches(req.body.newcity,patternNameAndAddress)
+    body.push("param")
+    if(newcity){ tracker.push("done")}
   }
 
-  if(!!req.body.state){
-    var state = matches(req.body.state,patternNameAndAddress)
-    body.push["param"]
-    if(state){ tracker.push("done")}
+  if(req.body.newstate.length != 0){
+    var newstate = matches(req.body.newstate,patternNameAndAddress)
+    body.push("param")
+    if(newstate){ tracker.push("done")}
   }
 
-  if(!!req.body.password){
-    var password = matches(req.body.password,patternPassword)
-    body.push["param"]
-    if(password){ tracker.push("done")}
+  if(req.body.newpassword.length != 0){
+    var newpassword = matches(req.body.newpassword,patternPassword)
+    body.push("param")
+    if(newpassword){ tracker.push("done")}
   }
 
-  return ( body.length == tracker.length )
+  if(req.body.confirmnewpassword.length != 0){
+    var confirmnewpassword = matches(req.body.confirmnewpassword,patternPassword)
+    body.push("param")
+    if(confirmnewpassword){ tracker.push("done")}
+  }
+
+  if(req.body.oldpassword.length != 0){
+    var oldpassword = matches(req.body.oldpassword,patternPassword)
+    body.push("param")
+    if(oldpassword){ tracker.push("done")}
+  }
+  var checker = body.length == tracker.length 
+  return checker
 }

@@ -8,6 +8,8 @@ html
     link(href='font-awesome/css/font-awesome.css', rel='stylesheet')
     link(href='css/animate.css', rel='stylesheet')
     link(href='css/style.css', rel='stylesheet')
+    link(rel='stylesheet', href='http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/start/jquery-ui.css')
+    link(href='css/custom.css', rel='stylesheet')
   body.fixed-navigation
     #wrapper
       nav.navbar-default.navbar-static-side(role='navigation')
@@ -18,14 +20,11 @@ html
                 a.dropdown-toggle(data-toggle='dropdown', href='#')
                   span.clear
                     span.block.m-t-xs
-                      strong.font-bold David Williams
+                      strong.font-bold #{user.username}
                     span.text-muted.text-xs.block
-                      | Art Director
-                      
-            li.active
-              a(href='#')
-                i.fa.fa-files-o
-                span.nav-label All Books               
+                      | #{user.city}, 
+                      br
+                      | #{user.state}
             li
               a(href='#')
                 i.fa.fa-th-large
@@ -33,9 +32,15 @@ html
                 span.fa.arrow
               ul.nav.nav-second-level
                 li
-                  a(href='#') Edit Profile
-                li
-                  a(href='/logout') Log Out
+                  a#editProfileLink(href='#') Edit Profile        
+            li
+              a#searchBooksLink(href='#')
+                i.fa.fa-search
+                span.nav-label Search Books  
+            li
+              a#allBooksLink(href='#')
+                i.fa.fa-files-o
+                span.nav-label All Books               
             li
               a(href='#')
                 i.fa.fa-book
@@ -43,11 +48,11 @@ html
                 span.fa.arrow
               ul.nav.nav-second-level
                 li
-                  a(href='#') All my Books
+                  a#allMyBooksLink(href='#') All my Books
                 li
-                  a(href='#') Borrowed Books
+                  a#borrowedBooksLink(href='#') Borrowed Books
                 li
-                  a(href='#') Lent Books
+                  a#lentBooksLink(href='#') Lent Books
             li
               a(href='#')
                 i.fa.fa-envelope
@@ -55,9 +60,9 @@ html
                 span.fa.arrow
               ul.nav.nav-second-level
                 li
-                  a(href='#') Borrowal 
+                  a#borrowalLink(href='#') Borrowal 
                 li
-                  a(href='#') Lending
+                  a#lendingLink(href='#') Lending
           
       #page-wrapper.gray-bg.sidebar-content
         .row.border-bottom
@@ -67,13 +72,33 @@ html
                 i.fa.fa-bars
             ul.nav.navbar-top-links.navbar-right
               li
-                span.m-r-sm.text-muted.welcome-message Welcome to Your online Book Catalogue.
+                span.m-r-sm.text-muted.welcome-message Your online Book Catalogue.
               li
                 a(href='/logout')
                   i.fa.fa-sign-out
                   |  Log out
         .wrapper-content
-          .row
+          .row  
+            .col-lg-12
+              h3.text-primary= msg
+          .row#searchBooks  
+            .search-form.col-lg-12
+              form#searchForm
+                .input-group
+                  input.form-control.input-lg#searchInput(type='text', placeholder='Search Google Books, enter name of book/author', name='search')
+                  .input-group-btn
+                    button.btn.btn-lg.btn-primary(type='submit')
+                      | Search
+                small.pull-right with autocomplete, powered by Google Books
+
+          .row.no-display#searchBooksResults
+          .row.no-display#allBooks
+          .row.no-display#allMyBooks
+          .row.no-display#borrowedBooks
+          .row.no-display#lentBooks
+          .row.no-display#borrowal
+          .row.no-display#lending
+          .row.no-display#template
             .col-lg-4
               .ibox.float-e-margins
                 .ibox-title
@@ -85,98 +110,44 @@ html
                     | 20% 
                     i.fa.fa-level-up
                   small New orders
-            .col-lg-4
-              .ibox.float-e-margins
-                .ibox-title
-                  span.label.label-info.pull-right Monthly
-                  h5 Orders
-                .ibox-content
-                  h1.no-margins 60 420,600
-                  .stat-percent.font-bold.text-info
-                    | 40% 
-                    i.fa.fa-level-up
-                  small New orders
-            .col-lg-4
-              .ibox.float-e-margins
-                .ibox-title
-                  span.label.label-warning.pull-right Annual
-                  h5 Income
-                .ibox-content
-                  h1.no-margins $ 120 430,800
-                  .stat-percent.font-bold.text-warning
-                    | 16% 
-                    i.fa.fa-level-up
-                  small New orders
-            .col-lg-4
-              .ibox.float-e-margins
-                .ibox-title
-                  span.label.label-primary.pull-right Today
-                  h5 Vistits
-                .ibox-content
-                  h1.no-margins 22 285,400
-                  .stat-percent.font-bold.text-navy
-                    | 20% 
-                    i.fa.fa-level-up
-                  small New orders
-            .col-lg-4
-              .ibox.float-e-margins
-                .ibox-title
-                  span.label.label-info.pull-right Monthly
-                  h5 Orders
-                .ibox-content
-                  h1.no-margins 60 420,600
-                  .stat-percent.font-bold.text-info
-                    | 40% 
-                    i.fa.fa-level-up
-                  small New orders
-            .col-lg-4
-              .ibox.float-e-margins
-                .ibox-title
-                  span.label.label-warning.pull-right Annual
-                  h5 Income
-                .ibox-content
-                  h1.no-margins $ 120 430,800
-                  .stat-percent.font-bold.text-warning
-                    | 16% 
-                    i.fa.fa-level-up
-                  small New orders
-          .row
+          .row.no-display#editProfile
             .col-lg-12
               .ibox.float-e-margins
                 .ibox-title
                   h5
                     | Leave Blank the Values You dont want to Change
                 .ibox-content
-                  form.form-horizontal.text-left(method='get')
+                  form.form-horizontal.text-left#editProfileForm(role="form" action="/editprofile" method='post')
                     .form-group
-                      label.col-lg-2.control-label New username
-                      span.col-lg-2.text-right.form-control-static David Williams
+                      span.col-sm-2.text-right.form-control-static.text-muted #{user.username}
+                      label.col-sm-3.control-label New username
                       .col-sm-7
-                        input.form-control(type='text')
-                        span.help-block.m-b-none Alpha Numeric Values. Less than 40 characters. 
+                        input.form-control(type='text' name="newusername")
                     .form-group
-                      label.col-lg-2.control-label New city
-                      span.col-lg-2.text-right.form-control-static Hyderabad
+                      span.col-sm-2.text-right.form-control-static #{user.city}
+                      label.col-sm-3.control-label New city
                       .col-sm-7
-                        input.form-control(type='text')
-                        span.help-block.m-b-none Alphabets. Less than 40 characters. 
+                        input.form-control(type='text' name="newcity")
                     .form-group
-                      label.col-lg-2.control-label New state
-                      span.col-lg-2.text-right.form-control-static Telangana
+                      span.col-sm-2.text-right.form-control-static #{user.state}
+                      label.col-sm-3.control-label New state
                       .col-sm-7
-                        input.form-control(type='text')
-                        span.help-block.m-b-none Alphabets. Less than 40 characters. 
+                        input.form-control(type='text' name="newstate")
                     .form-group
-                      label.col-sm-2.control-label New password
                       .col-sm-2
+                      label.col-sm-3.control-label Old password
                       .col-sm-7
-                        input.form-control(type='password', name='password')
-                        span.help-block.m-b-none Alphanumeric. Min 6, Max 15 characters.
+                        input.form-control(type='password', name='oldpassword' required="true")
                     .form-group
-                      label.col-sm-2.control-label Confirm new password
                       .col-sm-2
+                      label.col-sm-3.control-label New password
                       .col-sm-7
-                        input.form-control(type='password', name='password')
+                        input.form-control(type='password', name='newpassword')
+                    .form-group
+                      .col-sm-2
+                      label.col-sm-3.control-label Confirm new password
+                      .col-sm-7
+                        input.form-control(type='password', name='confirmnewpassword')
                     .hr-line-dashed
                     .form-group
                       .col-sm-4.col-sm-offset-2
@@ -202,4 +173,9 @@ html
     script(src='js/plugins/pace/pace.min.js')
     // jQuery UI
     script(src='js/plugins/jquery-ui/jquery-ui.min.js')
+    script(src="js/plugins/validate/jquery.validate.min.js")
+    script(src='js/custom.js')
+
+
+
   

@@ -11,17 +11,15 @@ module.exports = function (passport){
   passport.deserializeUser(function(id, done) {
       User.findById(id, function(err, user) {
           done(err, user);
+
       });
   });
 
   passport.use(new Strategy(
     function(username, password, done) {
-      User.findOne({name:username}, function(err, user) {
-
+      User.findOne({username:username}, function(err, user) {
         if (err) { return done(err) }
-
         if (!user) { return done(null, false)}
-
         user.comparePassword(password, function(err, isMatch) {
             if (err) { return done(err) }
             if ( !isMatch ) {

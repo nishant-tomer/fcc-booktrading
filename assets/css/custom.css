@@ -1,0 +1,8 @@
+.landing-page .header-back.one {
+  background: url('https://wallpaperscraft.com/image/cabinet_table_book_globe_lamp_books_library_54332_3840x1200.jpg') no-repeat;
+  background-size: cover;
+}
+
+.no-display {
+  display:none;
+}
