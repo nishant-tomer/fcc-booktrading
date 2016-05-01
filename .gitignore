@@ -1,4 +1,8 @@
-node_modules/
+node_modules/*
 .env
 client/img
-assets/css/patterns/
+assets/css/patterns/*
+assets/css/fonts/*
+assets/email_templates/*
+assets/js/demo/*
+assets/locales/*
