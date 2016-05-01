@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    var allSections = $("#searchBooks, #searchBooksResults, #allBooks, #allMyBooks, #borrowedBooks, #lentBooks, #borrowal, #lending, #editProfile")
+    var allSections = $("#searchBooks, #allBooks, #allMyBooks, #borrowedBooks, #lentBooks, #borrowal, #lending, #editProfile")
 
     // to clear the display area
     function clear (){
@@ -69,19 +69,18 @@ $(document).ready(function () {
       displaySection( $( "#"+id ) )
     })
 
-    // // submit handler for book search form
-    // $('#searchForm').on('submit', function (event) {
-    //     prevent(event)
-    //     alert('Form submitted!')
-    //     return false
-    // })
+    $("#cancel").click(function(event){
+      prevent(event)
+      $("input").val("")
+    })
 
-    // attach auto-complete functionality to textbox
+
+    // attach auto-complete functionality to searchInputBox
     $("#searchInput").autocomplete({
-       // define source of the data
        source: function (request, response) {
-           // url link to google books, including text entered by user (request.term)
-           var booksUrl = "https://www.googleapis.com/books/v1/volumes?printType=books&q=" + encodeURIComponent(request.term);
+           var booksUrl = "https://www.googleapis.com/books/v1/volumes?printType=books" +
+                          "&key=AIzaSyAkP2-5jhLpL7m6UkWKK94lFLKhfpWBNuA"+
+                          "&q="+ encodeURIComponent(request.term);
            $.ajax({
                url: booksUrl,
                dataType: "jsonp",
@@ -90,11 +89,8 @@ $(document).ready(function () {
                        if (item.volumeInfo.authors && item.volumeInfo.title && item.volumeInfo.industryIdentifiers && item.volumeInfo.publishedDate)
                        {
                            return {
-                               // label value will be shown in the suggestions
                                label: item.volumeInfo.title + ', ' + item.volumeInfo.authors[0] + ', ' + item.volumeInfo.publishedDate,
-                               // value is what gets put in the textbox once an item selected
                                value: item.volumeInfo.title,
-                               // other individual values to use later
                                title: item.volumeInfo.title,
                                author: item.volumeInfo.authors[0],
                                isbn: item.volumeInfo.industryIdentifiers,
@@ -104,40 +100,85 @@ $(document).ready(function () {
                            };
                        }
                    }));
+               },
+               error: function(error){
+                 $('#searchBooksResults').html("");
+                 var el = "<h2> No autocomplete Available due to <h4>" + error + "</h4></h2>"
+                 el.appendTo('#searchBooksResults')
+                 displaySection( $('#searchBooks') )
                }
+
            });
        },
        select: function (event, ui) {
-           // what to do when an item is selected
-           // first clear anything that may already be in the description
-           $('#searchBooks').html("");
-           // we get the currently selected item using ui.item
-           // show a pic if we have one
-           if (item.image != '')
-           {
-               $('#searchBooks').append('<img src="' + ui.item.image + '" style="float: left; padding: 10px;">');
-           }
-           // and title, author, and year
-           $('#searchBooks').append('<p><b>Title:</b> ' + ui.item.title  + '</p>');
-           $('#searchBooks').append('<p><b>Author:</b> ' + ui.item.author  + '</p>');
-           $('#searchBooks').append('<p><b>First published year:</b> ' + ui.item.publishedDate  + '</p>');
-           // and the usual description of the book
-           $('#searchBooks').append('<p><b>Description:</b> ' + ui.item.description  + '</p>');
-           // and show the link to oclc (if we have an isbn number)
-           if (ui.item.isbn && ui.item.isbn[0].identifier)
-           {
-               $('#searchBooks').append('<P><b>ISBN:</b> ' + ui.item.isbn[0].identifier + '</p>');
-               $('#searchBooks').append('<a href="http://www.worldcat.org/isbn/' + ui.item.isbn[0].identifier + '" target="_blank">View item on worldcat</a>');
-           }
-
+           $('#searchBooksResults').html("");
            displaySection( $('#searchBooks') )
+           appendAuto( ui.item,{"modal":false} );
        },
-       minLength: 2 // set minimum length of text the user must enter
+       minLength: 1
+
+   // To close autocomplete after user hits ENTER without selecting any suggestions.
+ }).keypress(function (e) {
+        if(e.which === 13) {
+            $( "#searchInput" ).autocomplete( "close" );
+        }
+    });
+
+   // submit handler for searchInputBox
+   $('#searchForm').on('submit', function (event) {
+       prevent(event)
+       var booksUrl = "https://www.googleapis.com/books/v1/volumes?printType=books" +
+                      "&key=AIzaSyAkP2-5jhLpL7m6UkWKK94lFLKhfpWBNuA"+
+                      "&q="+ encodeURIComponent($("#searchInput").val());
+       $.ajax({
+           url: booksUrl,
+           dataType: "jsonp",
+           success: function(data) {
+               $('#searchBooksResults').html("");
+               displaySection( $('#searchBooks') )
+               data.items.forEach( function (item, index) {
+                 // see append function for options' presence
+                    append(item,{ "addbook": true })
+               });
+           },
+          error: function(error){
+            $('#searchBooksResults').html("");
+            var el = "<h2> No Results Available due to <h4>" + error + "</h4></h2>"
+            el.appendTo('#searchBooksResults')
+            displaySection( $('#searchBooks') )
+          }
+       });
+       return false
    })
 
+   //To trigger Description modal
+
+   $(document).on("click",".details",function(event){
+     prevent(event)
+     var item = JSON.parse( $(this).attr("id") )
+     $("#modalDetails").html("")
+     appendAuto(item,{"modal":true})
+   })
+
+   $(document).on("click",".action",function(event){
+     prevent(event)
+     var item = JSON.parse( $(this).attr("id") )
+     var action = $(this).text()
+     var url = ""
+     if(action == "Add"){ url = "/add/item" ; execute(url) }
+     else if(action == "Remove"){ url = "/remove/" + item ; execute(url) }
+     else if(action == "Borrow"){ url = "/borrow/" + item ; execute(url) }
+     else if(action == "Return"){ url = "/return/" + item ; execute(url) }
+     else if(action == "Accept"){ url = "/accept/" + item ; execute(url) }
+     else if(action == "Revert"){ url = "/revert/" + item ; execute(url) }
+     else if(action == "Take Back"){ url = "/takeback/" + item ; execute(url) }
+   })
+
+   // Validations for editProfile section
   $.validator.addMethod("alphabetical", function(value, element, regexpr) {
         return !(regexpr.test(value));
       }, "Only Letter and spaces allowed. Case sensitive");
+
   $.validator.addMethod("alphanumerical", function(value, element, regexpr) {
        return !(regexpr.test(value));
      }, "Only Letter and numbers allowed. Case sensitive");
@@ -176,5 +217,129 @@ $(document).ready(function () {
              }
          }
      });
+     // Helper functions for Catalog Manipulation
+
+     function execute(url){
+       $.ajax({
+           url: url,
+           dataType: "json",
+           success: function(data) {
+               $('#msg').html(data.message);
+               $('#msg').show(500);
+               hide();
+           },
+          error: function(error){
+            $('#msg').html(error);
+            $('#msg').show(500);
+            hide();
+          }
+       });
+     }
+
+     //helper functions for search functionality
+    function append(item,options) {
+       if (item.volumeInfo.authors && item.volumeInfo.title && item.volumeInfo.industryIdentifiers && item.volumeInfo.publishedDate)
+       {
+          var el = $("#item").clone(true)
+          var dbString = {}
+           dbString.title = item.volumeInfo.title
+           dbString.author = item.volumeInfo.authors[0]
+           dbString.description = item.volumeInfo.description
+           dbString.isbn = item.volumeInfo.industryIdentifiers
+           dbString.publishedDate = item.volumeInfo.publishedDate
+           dbString.image = item.volumeInfo.imageLinks == null ? "" : item.volumeInfo.imageLinks.thumbnail
+          if ( dbString.image != '') {
+            el.find("#img").attr("src", dbString.image );
+          }else{
+            el.find("#img").attr("alt", "Image Not Available");
+          }
+
+          el.find("#title").html( dbString.title );
+          el.find("#author").html( dbString.author );
+          el.find("#publishedDate").html( dbString.publishedDate );
+          if (dbString.isbn && dbString.isbn[0].identifier){
+            el.find("#isbn").html( dbString.isbn[0].identifier );
+          }else {
+            el.find("#isbn").html("Not Available");
+          }
+
+          el.find(".action").attr("id", JSON.stringify(dbString))
+          el.find(".details").attr("id", JSON.stringify(dbString))
+
+          // Check which section is item getting appended to.
+          if(!!options.addbook){
+            el.find(".action").text("Add")
+            el.appendTo("#searchBooksResults");
+          }
+          else if (!!options.removebook) {
+            el.find(".action").text("Remove")
+            el.appendTo("#allMyBooks");
+           }
+          else if (!!options.sendrequest) {
+            el.find(".action").text("Borrow")
+            el.appendTo("#allBooks");
+           }
+          else if (!!options.returnbook) {
+            el.find(".action").text("Return")
+            el.appendTo("#borrowedBooks");
+           }
+          else if (!!options.acceptrequest) {
+            el.find(".action").text("Accept")
+            el.appendTo("#lending");
+           }
+          else if (!!options.revertrequest) {
+            el.find(".action").text("Revert")
+            el.appendTo("#borrowal");
+           }
+          else if (!!options.takebackbook) {
+            el.find(".action").text("Take Back")
+            el.appendTo("#lentBooks");
+           }
+
+        }
+      return
+    }
+
+    function appendAuto(item, options){
+      var el = $("#itemAuto").clone(true)
+      if (item.image != '') {
+         el.find("#img").attr("src", item.image );
+       }else{
+         el.find("#img").attr("alt", "Image Not Available");
+       }
+
+      el.find("#title").html( item.title );
+      el.find("#author").html( item.author );
+      el.find("#publishedDate").html( item.publishedDate );
+      el.find("#description").html( item.description );
+
+      if (item.isbn && item.isbn[0].identifier){
+         el.find("#isbn").html( item.isbn[0].identifier );
+         el.find("#worldcat").attr("href",'http://www.worldcat.org/isbn/' + item.isbn[0].identifier);
+      }else {
+        el.find("#isbn").html("Not Available");
+        el.find("#worldcat").attr("href",'#');
+      }
+
+
+      if (!!options.modal) {
+        el.find(".action").remove()
+        el.appendTo("#modalDetails")
+      }else {
+        el.find(".action").attr("id", JSON.stringify(item))
+        el.appendTo('#searchBooksResults')
+      }
+      return
+    }
+
+
+    // Hide welcome-message
+    function hide(){
+        setTimeout(function() {
+          $("#msg").hide( 500)
+        }, 3000);
+    }
+    hide()
+
 
 })

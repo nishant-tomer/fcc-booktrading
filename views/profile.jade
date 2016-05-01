@@ -10,6 +10,8 @@ html
     link(href='css/style.css', rel='stylesheet')
     link(rel='stylesheet', href='http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/start/jquery-ui.css')
     link(href='css/custom.css', rel='stylesheet')
+    style(type='text/css').
+
   body.fixed-navigation
     #wrapper
       nav.navbar-default.navbar-static-side(role='navigation')
@@ -80,7 +82,7 @@ html
         .wrapper-content
           .row  
             .col-lg-12
-              h3.text-primary= msg
+              h3.text-primary#msg= msg
           .row#searchBooks  
             .search-form.col-lg-12
               form#searchForm
@@ -90,8 +92,7 @@ html
                     button.btn.btn-lg.btn-primary(type='submit')
                       | Search
                 small.pull-right with autocomplete, powered by Google Books
-
-          .row.no-display#searchBooksResults
+            .col-lg-12#searchBooksResults
           .row.no-display#allBooks
           .row.no-display#allMyBooks
           .row.no-display#borrowedBooks
@@ -99,17 +100,35 @@ html
           .row.no-display#borrowal
           .row.no-display#lending
           .row.no-display#template
-            .col-lg-4
+            .col-md-8#itemAuto
               .ibox.float-e-margins
                 .ibox-title
-                  span.label.label-primary.pull-right Today
-                  h5 Vistits
-                .ibox-content
-                  h1.no-margins 22 285,400
-                  .stat-percent.font-bold.text-navy
-                    | 20% 
-                    i.fa.fa-level-up
-                  small New orders
+                  h4#title 
+                .ibox-content(style="min-height:250px !important;")
+                  .row
+                    .col-sm-3
+                      img#img
+                    .col-sm-9
+                      strong#author(style="margin-right:10px;")
+                      span#publishedDate
+                      p#description
+                      p ISBN:
+                        span#isbn(style="margin: 0px 5px" )
+                        a.btn.btn-white#worldcat(target="_blank") view on worldcat
+                      p  
+                        button.btn.btn-primary.action Add 
+            .col-md-4#item(style="padding:10px; min-height:250px;")
+                  img.img-responsive.img-thumbnail#img(style="float:left; margin-right:10px")
+                  h4#title(style="margin: 0 10px;") 
+                  p#author(style="margin:10px;")
+                  p#publishedDate
+                  p(style="margin:10px;") ISBN:
+                    span#isbn
+                  button.btn.btn-white.details(type='button', data-toggle='modal', data-target='#myModal')
+                    | view description
+                  p(style="margin:10px;")
+                   button.btn.btn-primary.action
+                    
           .row.no-display#editProfile
             .col-lg-12
               .ibox.float-e-margins
@@ -151,10 +170,16 @@ html
                     .hr-line-dashed
                     .form-group
                       .col-sm-4.col-sm-offset-2
-                        button.btn.btn-white(type='submit') Cancel
-                        button.btn.btn-primary(type='submit' style= "margin-left:5px;") Save changes
+                        button.btn.btn-white#cancel Cancel
+                        if ( user.username == "Explorer" || user.username == "Another Explorer" ) 
+                          button.btn.btn-primary(type='submit' style= "margin-left:5px;"  disabled="true") Save changes
+                          small.text-muted   This Profile is not Editable.
+                        else                             
+                          button.btn.btn-primary(type='submit' style= "margin-left:5px;" ) Save changes
+                            
+        #myModal.modal.fade(style="width:100vw", tabindex='-1', role='dialog', aria-labelledby='myModalLabel')
+          #modalDetails(style="margin:10vh auto !important; width:80vw")
 
-          
         .footer
           .pull-right
             | Nishant Tomer for 
