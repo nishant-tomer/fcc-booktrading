@@ -1,4 +1,4 @@
-./node_modules/
-./.env
-./client/img
-./assets/css/patterns/
+node_modules/
+.env
+client/img
+assets/css/patterns/
