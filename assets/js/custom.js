@@ -137,8 +137,18 @@ $(document).ready(function () {
                $('#searchBooksResults').html("");
                displaySection( $('#searchBooks') )
                data.items.forEach( function (item, index) {
+                 var book = {}
+                 if (item.volumeInfo.authors && item.volumeInfo.title && item.volumeInfo.industryIdentifiers && item.volumeInfo.publishedDate)
+                 {
+                     book.title = item.volumeInfo.title
+                     book.author = item.volumeInfo.authors[0]
+                     book.description = item.volumeInfo.description
+                     book.isbn = item.volumeInfo.industryIdentifiers
+                     book.publishedDate = item.volumeInfo.publishedDate
+                     book.image = item.volumeInfo.imageLinks == null ? "" : item.volumeInfo.imageLinks.thumbnail
+                 }
                  // see append function for options' presence
-                    append(item,{ "addbook": true })
+                 append(book,{ "addbook": true })
                });
            },
           error: function(error){
@@ -165,13 +175,13 @@ $(document).ready(function () {
      var item = JSON.parse( $(this).attr("id") )
      var action = $(this).text()
      var url = ""
-     if(action == "Add"){ url = "/add/" + item ; execute(url) }
-     else if(action == "Remove"){ url = "/remove/" + item ; execute(url) }
-     else if(action == "Borrow"){ url = "/borrow/" + item ; execute(url) }
-     else if(action == "Return"){ url = "/return/" + item ; execute(url) }
-     else if(action == "Accept"){ url = "/accept/" + item ; execute(url) }
-     else if(action == "Revert"){ url = "/revert/" + item ; execute(url) }
-     else if(action == "Take Back"){ url = "/takeback/" + item ; execute(url) }
+     if(action == "Add"){ url = "/add" ; execute(url, item) }
+     else if(action == "Remove"){ url = "/remove" ; execute(url, item) }
+     else if(action == "Borrow"){ url = "/borrow"  ; execute(url, item) }
+     else if(action == "Return"){ url = "/return" ; execute(url, item) }
+     else if(action == "Accept"){ url = "/accept" ; execute(url, item) }
+     else if(action == "Revert"){ url = "/revert" ; execute(url, item) }
+     else if(action == "Take Back"){ url = "/takeback"  ; execute(url, item) }
    })
 
    // Validations for editProfile section
@@ -219,12 +229,15 @@ $(document).ready(function () {
      });
      // Helper functions for Catalog Manipulation
 
-     function execute(url){
+     function execute(url,item){
        $.ajax({
+           type: "POST",
            url: url,
+           data: JSON.stringify(item),
+           contentType: "application/json; charset=utf-8",
            dataType: "json",
            success: function(data) {
-               $('#msg').html(data.message + "Try reloading.");
+               $('#msg').html(data.message + " Try reloading.");
                $('#msg').show(500);
                hide();
            },
@@ -237,34 +250,26 @@ $(document).ready(function () {
      }
 
      //helper functions for search functionality
-    function append(item,options) {
-       if (item.volumeInfo.authors && item.volumeInfo.title && item.volumeInfo.industryIdentifiers && item.volumeInfo.publishedDate)
-       {
+    function append(item, options) {
           var el = $("#item").clone(true)
-          var dbString = {}
-           dbString.title = item.volumeInfo.title
-           dbString.author = item.volumeInfo.authors[0]
-           dbString.description = item.volumeInfo.description
-           dbString.isbn = item.volumeInfo.industryIdentifiers
-           dbString.publishedDate = item.volumeInfo.publishedDate
-           dbString.image = item.volumeInfo.imageLinks == null ? "" : item.volumeInfo.imageLinks.thumbnail
-          if ( dbString.image != '') {
-            el.find("#img").attr("src", dbString.image );
+
+          if ( item.image != '') {
+            el.find("#img").attr("src", item.image );
           }else{
             el.find("#img").attr("alt", "Image Not Available");
           }
 
-          el.find("#title").html( dbString.title );
-          el.find("#author").html( dbString.author );
-          el.find("#publishedDate").html( dbString.publishedDate );
-          if (dbString.isbn && dbString.isbn[0].identifier){
-            el.find("#isbn").html( dbString.isbn[0].identifier );
+          el.find("#title").html( item.title );
+          el.find("#author").html( item.author );
+          el.find("#publishedDate").html( item.publishedDate );
+          if (item.isbn && item.isbn[0].identifier){
+            el.find("#isbn").html( item.isbn[0].identifier );
           }else {
             el.find("#isbn").html("Not Available");
           }
 
-          el.find(".action").attr("id", JSON.stringify(dbString))
-          el.find(".details").attr("id", JSON.stringify(dbString))
+          el.find(".action").attr("id", JSON.stringify(item))
+          el.find(".details").attr("id", JSON.stringify(item))
 
           // Check which section is item getting appended to.
           if(!!options.addbook){
@@ -296,7 +301,7 @@ $(document).ready(function () {
             el.appendTo("#lentBooks");
            }
 
-        }
+
       return
     }
 
@@ -355,43 +360,52 @@ $(document).ready(function () {
     function populator(data){
 
       if(!!data.message){
-        $('#msg').html(data.message + "Try reloading.");
-        $('#msg').show(500);
+        $('#msg').html(data.message + " Try reloading.");
+        $('#msg').show();
         hide();
 
       }else {
-
         for (var key in data) {
             if (!data.hasOwnProperty(key)) { continue }
-
             var booksArray = data[key]
             if( key == "allBooks"){
-              booksArray.books.forEach( function (book, index) {
-                   append(book,{ "sendrequest": true })
-              });
+              if ( booksArray.length > 0 ) {
+                booksArray.forEach( function (book, index) {
+                    book = JSON.parse( book )
+                    append(book,{ "sendrequest": true })
+                });
+              }
             }
+
             else if( key == "books"){
-              booksArray.books.forEach( function (book, index) {
+              booksArray.forEach( function (book, index) {
+                   book = JSON.parse( book )
+                   console.log(book)
+                   console.log( typeof(book))
                    append(book,{ "removebook": true })
               });
             }
             else if (key == "borrowal") {
-              booksArray.books.forEach( function (book, index) {
+              booksArray.forEach( function (book, index) {
+                  book = JSON.parse( book )
                    append(book,{ "revertrequest": true })
               });
             }
             else if (key == "lending") {
-              booksArray.books.forEach( function (book, index) {
+              booksArray.forEach( function (book, index) {
+                  book = JSON.parse( book )
                    append(book,{ "acceptrequest": true })
               });
             }
             else if (key == "lent") {
-              booksArray.books.forEach( function (book, index) {
+              booksArray.forEach( function (book, index) {
+                  book = JSON.parse( book )
                    append(book,{ "takebackbook": true })
               });
             }
             else if (key == "borrowed") {
-              booksArray.books.forEach( function (book, index) {
+              booksArray.forEach( function (book, index) {
+                    book = JSON.parse( book )
                    append(book,{ "returnbook": true })
               });
             }
