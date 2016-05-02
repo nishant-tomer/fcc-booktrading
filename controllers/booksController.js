@@ -66,10 +66,10 @@ booksController.borrow = function(req,res){
 booksController.acceptrequest = function(req,res){
   var origbook = req.body
   var book = origbook
+  origbook =  JSON.stringify(origbook)
   book.borrower = book.requester
   var borrower = book.borrower
   book = JSON.stringify(book)
-  origbook =  JSON.stringify(origbook)
 
   User.findOneAndUpdate({username:req.user.username}, { $pull: { lending : { $in: [origbook] } }, $addToSet:{ lent : book } }, {new: true}, function(err, doc){
     if(err){  console.log(err) ;res.json({"message":"Unable to accept the request."}) }
