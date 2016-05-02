@@ -7,7 +7,12 @@ var UserSchema = new Schema({
     username: { type: String, required: true, index: { unique: true } },
     password: { type: String, required: true },
     city: { type:String, required:true },
-    state: { type:String, required:true }
+    state: { type:String, required:true },
+    books: [{type:String}],
+    borrowed:[{type:String}],
+    lent:[{type:String}],
+    borrowal:[{type:String}],
+    lending:[{type:String}]
 });
 
 

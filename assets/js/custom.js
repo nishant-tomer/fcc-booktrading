@@ -165,7 +165,7 @@ $(document).ready(function () {
      var item = JSON.parse( $(this).attr("id") )
      var action = $(this).text()
      var url = ""
-     if(action == "Add"){ url = "/add/item" ; execute(url) }
+     if(action == "Add"){ url = "/add/" + item ; execute(url) }
      else if(action == "Remove"){ url = "/remove/" + item ; execute(url) }
      else if(action == "Borrow"){ url = "/borrow/" + item ; execute(url) }
      else if(action == "Return"){ url = "/return/" + item ; execute(url) }
@@ -224,7 +224,7 @@ $(document).ready(function () {
            url: url,
            dataType: "json",
            success: function(data) {
-               $('#msg').html(data.message);
+               $('#msg').html(data.message + "Try reloading.");
                $('#msg').show(500);
                hide();
            },
@@ -341,5 +341,62 @@ $(document).ready(function () {
     }
     hide()
 
+    $.ajax({
+            url : "/books",
+            dataType: "json",
+            success: populator,
+            error: function(err){
+              $('#msg').html(error);
+              $('#msg').show(500);
+              hide();
+            }
+          })
+
+    function populator(data){
+
+      if(!!data.message){
+        $('#msg').html(data.message + "Try reloading.");
+        $('#msg').show(500);
+        hide();
+
+      }else {
+
+        for (var key in data) {
+            if (!data.hasOwnProperty(key)) { continue }
+
+            var booksArray = data[key]
+            if( key == "allBooks"){
+              booksArray.books.forEach( function (book, index) {
+                   append(book,{ "sendrequest": true })
+              });
+            }
+            else if( key == "books"){
+              booksArray.books.forEach( function (book, index) {
+                   append(book,{ "removebook": true })
+              });
+            }
+            else if (key == "borrowal") {
+              booksArray.books.forEach( function (book, index) {
+                   append(book,{ "revertrequest": true })
+              });
+            }
+            else if (key == "lending") {
+              booksArray.books.forEach( function (book, index) {
+                   append(book,{ "acceptrequest": true })
+              });
+            }
+            else if (key == "lent") {
+              booksArray.books.forEach( function (book, index) {
+                   append(book,{ "takebackbook": true })
+              });
+            }
+            else if (key == "borrowed") {
+              booksArray.books.forEach( function (book, index) {
+                   append(book,{ "returnbook": true })
+              });
+            }
+        }
+      }
+    }
 
 })

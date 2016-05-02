@@ -13,6 +13,7 @@ module.exports = function(app,passport){
       res.render("signup.jade", {"message":req.flash("message")})
     })
     app.get("/login",function(req,res){
+      console.log( req.flash("message") )
       res.render("login.jade", {"message":req.flash("message")})
     })
     app.get("/logout",function(req,res){
@@ -36,12 +37,14 @@ module.exports = function(app,passport){
 
 
 // Catalog Manipulation routes
-    app.get("/remove/:item", isLoggedIn, booksController.remove )
-    app.get( "/borrow/:item", isLoggedIn, booksController.borrow)
-    app.get("/return/:item", isLoggedIn, booksController.return)
-    app.get( "/accept/:item", isLoggedIn, booksController.accept)
-    app.get("/revert/:item", isLoggedIn, booksController.revert)
-    app.get("/takeback/:item", isLoggedIn, booksController.takeback)
+    app.get("/books", helpers.isLoggedIn, booksController.getAll)
+    app.get("/add/:item", helpers.isLoggedIn, booksController.add )
+    app.get("/remove/:item", helpers.isLoggedIn, booksController.remove )
+    app.get( "/borrow/:item", helpers.isLoggedIn, booksController.borrow)
+    app.get( "/accept/:item", helpers.isLoggedIn, booksController.accept)
+    app.get("/return/:item", helpers.isLoggedIn, booksController.return)
+    app.get("/revert/:item", helpers.isLoggedIn, booksController.revert)
+    app.get("/takeback/:item", helpers.isLoggedIn, booksController.takeback)
 
 
 }
